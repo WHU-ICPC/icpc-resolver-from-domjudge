@@ -160,12 +160,12 @@ class DOMjudge:
             self.resolver_award_first_WA()
         ], [])
 
-    def award(self, id, citation, team_id):
+    def award(self, id, citation, team_ids):
         return {
             'id': id,
             'citation': citation,
             'show': 'true',
-            'teamId': team_id
+            'teamId': team_ids
         }
 
     def resolver_award_first_solved_formatter(self):
@@ -190,9 +190,8 @@ class DOMjudge:
                 break
             buf[row['rank']].append(row['team_id'])
         top_team_award = []
-        for idx, val in enumerate(buf):
-            for team_id in val:
-                top_team_award.append(self.award(make_ordinal(idx), '%s Place' % make_ordinal(idx), team_id))
+        for idx, team_ids in enumerate(buf):
+            top_team_award.append(self.award(make_ordinal(idx), '%s Place' % make_ordinal(idx), team_ids))
         return top_team_award
 
     def resolver_award_first_WA(self):
