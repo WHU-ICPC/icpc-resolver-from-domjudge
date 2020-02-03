@@ -23,8 +23,7 @@ A tools to generate xml file of icpc-resolver via domjudge RESTful API.
 ```jsonld
   "url": "https://www.example.com/api/v4/contests/{cid},
   "key": "KEY",
-  "xml": "events.xml",
-  "showGroupList": ["Participates"]
+  "xml": "events.xml"
 ```
 2. run main.py
 ```
