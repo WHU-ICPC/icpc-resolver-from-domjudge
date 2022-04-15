@@ -5,7 +5,7 @@ A tools to generate xml file of icpc-resolver via domjudge RESTful API.
 ## Prerequisite
 
 * icpc-resolver == resolver-2.1.2100
-* domjudge-domserver == 7.0.1
+* domjudge-domserver >= 7.0.1
 * python >= 3.6.8
 
 ## Usage

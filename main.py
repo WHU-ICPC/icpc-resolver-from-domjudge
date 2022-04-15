@@ -9,8 +9,7 @@ import subprocess
 def main():
     argument = argument_parser()
     config = config_loader(argument['config'])
-    DOMjudge(config['url'], config['key']).export_XML(config['xml'])
-    subprocess.run("../resolver-2.1/resolver.sh events.xml --display 2 --fast 0.0001 --style team_name".split(' '))
+    DOMjudge(config).export(config['xml'])
 
 if __name__ == '__main__':
     main()
