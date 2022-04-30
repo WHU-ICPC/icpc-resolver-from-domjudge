@@ -5,7 +5,7 @@ A tools to generate xml file of icpc-resolver via domjudge RESTful API.
 一键生成带有奖项信息的滚榜数据，适用于`resolver`。
 
 默认生成奖项：
-- 全场第一名（World Champoin）
+- 全场第一名（World Champion）
 - 正式队伍前三名
 - 金牌队伍
 - 银牌队伍
