@@ -2,6 +2,23 @@
 
 A tools to generate xml file of icpc-resolver via domjudge RESTful API.
 
+一键生成带有奖项信息的滚榜数据，适用于`resolver`。
+
+默认生成奖项：
+- 全场第一名（World Champoin）
+- 正式队伍前三名
+- 金牌队伍
+- 银牌队伍
+- 铜牌队伍
+- 最佳女队奖
+- 正式队伍的一血奖
+- 顽强拼搏奖
+- ~~第一发WA奖~~
+
+其中打星队伍会颁发金银铜，但不会占用总获奖名额。
+
+在生成`xml`的同时还会生成对应名字的`csv`，包含队伍的信息和奖项。
+
 ## Prerequisite
 
 * icpc-resolver >= resolver-2.1
