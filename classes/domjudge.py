@@ -10,6 +10,7 @@ class DOMjudge:
 
     def __init__(self, config):
         self.config = config
+        self.award_list = ['"team id","tean name","team group","team affiliation","award","team members"']
         self.load_data()
         self.prep_data()
 
@@ -56,11 +57,9 @@ class DOMjudge:
         same = lambda x, y: list(set(x) & set(y))
         func = lambda team: len(same(team['group_ids'], group_ids))
         self.teams = list(filter(func, teams))
-        self.team_to_categories = {}
+        self.team_dict = {}
         for team in self.teams:
-            group_id = team['group_ids']
-            team_id = team['id']
-            self.team_to_categories[team_id] = group_id
+            self.team_dict[team['id']] = team
 
     def load_submissions(self):
         submissions = self.API('/submissions')
@@ -121,9 +120,8 @@ class DOMjudge:
            f.write(XML_dump(self.resolver_formatter()))
 
     def export_result(self, filename):
-        return
         with open(filename, 'w', encoding="utf-8") as f:
-           f.write(XML_dump(self.resolver_formatter()))
+           f.write('\n'.join(self.award_list))
 
     def resolver_formatter(self):
         return { 'contest': self.resolver_contest_formatter() }
@@ -196,16 +194,26 @@ class DOMjudge:
 
     def resolver_award_formatter(self):
         return reduce(lambda x, y: x + y, [
-            self.resolver_award_first_solved_formatter(),
-            self.resolver_award_top_team_formatter(3),
             self.resolver_award_winner_formatter(),
+            self.resolver_award_top_team_formatter(3),
             self.resolver_award_medal_formatter(),
             self.resolver_award_best_girl_formatter(),
+            self.resolver_award_first_solved_formatter(),
             self.resolver_award_last_AC_formatter()
             # self.resolver_award_first_WA()
         ], [])
 
     def award(self, id, citation, team_ids):
+        if type(team_ids) != list:
+            teams = [team_ids]
+        else:
+            teams = team_ids
+        for team_id in teams:
+            team = self.team_dict[team_id]
+            category = team["affiliation"]
+            group = self.get_team_group_name(team_id)
+            members = team["members"]
+            self.award_list.append(f'"{team_id}","{team["name"]}","{group}","{category}","{citation}","{members}"')
         return {
             'id': id,
             'citation': citation,
@@ -213,8 +221,25 @@ class DOMjudge:
             'teamId': team_ids
         }
 
-    def get_team_categories(self, team_id):
-        return self.team_to_categories[team_id][0]
+    def get_team_categories_id(self, team_id):
+        return self.team_dict[team_id]["group_ids"]
+
+    def team_in_group(self, team_id, check_groups):
+        check_groups = [str(i) for i in check_groups]
+        groups = self.get_team_categories_id(team_id)
+        for group_id in groups:
+            if group_id in check_groups:
+                return True
+        return False
+
+    def team_award_occupy(self, team_id):
+        return not self.team_in_group(team_id, self.config['no_occupy_award_categories'])
+
+    def get_team_group_name(self, team_id):
+        group_name = [] 
+        for group_id in self.team_dict[team_id]["group_ids"]:
+            group_name.append(self.groups[group_id]["name"])
+        return '、'.join(group_name)
 
     def resolver_award_first_solved_formatter(self):
         first_solved, first_solved_award = [ False for _ in range(len(self.problems)) ], []
@@ -222,7 +247,7 @@ class DOMjudge:
         for submission in self.submissions:
             if not submission['judgement_type']['solved']:
                 continue
-            if self.get_team_categories(submission['team_id']) in self.config['no_occupy_award_categories']:   #打星队伍不评奖
+            if not self.team_award_occupy(submission['team_id']): #打星队伍不评奖
                 continue
             if ctime2timestamp(submission['contest_time']) >= ctime2timestamp(self.contest_info['duration']) - ctime2timestamp(self.contest_info['scoreboard_freeze_duration']):
                 continue
@@ -239,7 +264,7 @@ class DOMjudge:
         for row in self.scoreboard['rows']:
             if cnt == rank:
                 break
-            if self.get_team_categories(row['team_id']) in self.config['no_occupy_award_categories']:
+            if not self.team_award_occupy(row['team_id']): #打星队伍不评奖
                 continue
             cnt += 1
             buf[cnt].append(row['team_id'])
@@ -265,7 +290,7 @@ class DOMjudge:
     def resolver_award_best_girl_formatter(self):
         best_girls_team_id = -1
         for row in self.scoreboard['rows']:
-            if self.get_team_categories(row['team_id']) in self.config['award_best_girl']:
+            if self.team_in_group(row['team_id'], self.config['award_best_girl']):
                 best_girls_team_id = row['team_id']
                 break
             if row['rank'] > self.limited: # 限定最佳女队必得奖牌
@@ -283,7 +308,7 @@ class DOMjudge:
         pos = 0
         while totle > 0:
             row = self.scoreboard['rows'][pos]
-            if self.get_team_categories(row['team_id']) in self.config['no_occupy_award_categories']:
+            if not self.team_award_occupy(row['team_id']): #打星队伍不占用获奖名额
                 totle += 1
             buf.append(row['team_id'])
             totle -= 1
@@ -294,7 +319,7 @@ class DOMjudge:
         buf = []
         while totle > 0:
             row = self.scoreboard['rows'][pos]
-            if self.get_team_categories(row['team_id']) in self.config['no_occupy_award_categories']:
+            if not self.team_award_occupy(row['team_id']): #打星队伍不占用获奖名额
                 totle += 1
             buf.append(row['team_id'])
             totle -= 1
@@ -305,7 +330,7 @@ class DOMjudge:
         buf = []
         while totle > 0:
             row = self.scoreboard['rows'][pos]
-            if self.get_team_categories(row['team_id']) in self.config['no_occupy_award_categories']:
+            if not self.team_award_occupy(row['team_id']): #打星队伍不占用获奖名额
                 totle += 1
             buf.append(row['team_id'])
             totle -= 1
