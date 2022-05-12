@@ -19,6 +19,8 @@ A tools to generate xml file of icpc-resolver via domjudge RESTful API.
 
 在生成`xml`的同时还会生成对应名字的`csv`，包含队伍的信息和奖项。
 
+`resolver`源码阅读记录：[滚榜程序Resolver源码阅读](https://blog.lanly.vip/article/7)
+
 ## Prerequisite
 
 * icpc-resolver >= resolver-2.1
@@ -33,7 +35,6 @@ A tools to generate xml file of icpc-resolver via domjudge RESTful API.
   "url": <contest api url>,
   "key": <Basic Authorization key>,
   "xml": <output xml file name>,
-  "showGroupList": [<group1>, <group2>, ...]
   "gold": <the number of gold medals>,
   "silver": <the number of silver medals>,
   "bronze": <the number of bronze medals>,
