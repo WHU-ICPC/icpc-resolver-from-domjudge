@@ -306,36 +306,39 @@ class DOMjudge:
         totle = self.config['gold']
         buf = []
         pos = 0
-        while totle > 0:
-            row = self.scoreboard['rows'][pos]
-            if not self.team_award_occupy(row['team_id']): #打星队伍不占用获奖名额
-                totle += 1
-            buf.append(row['team_id'])
-            totle -= 1
-            pos += 1
-        medal_team_award.append(self.award("gold-medal", "Gold Medalist", buf))
+        if totle > 0:
+            while totle > 0:
+                row = self.scoreboard['rows'][pos]
+                if not self.team_award_occupy(row['team_id']): #打星队伍不占用获奖名额
+                    totle += 1
+                buf.append(row['team_id'])
+                totle -= 1
+                pos += 1
+            medal_team_award.append(self.award("gold-medal", "Gold Medalist", buf))
         # award for silver
         totle = self.config['silver']
         buf = []
-        while totle > 0:
-            row = self.scoreboard['rows'][pos]
-            if not self.team_award_occupy(row['team_id']): #打星队伍不占用获奖名额
-                totle += 1
-            buf.append(row['team_id'])
-            totle -= 1
-            pos += 1
-        medal_team_award.append(self.award("silver-medal", "Silver Medalist", buf))
+        if totle > 0:
+            while totle > 0:
+                row = self.scoreboard['rows'][pos]
+                if not self.team_award_occupy(row['team_id']): #打星队伍不占用获奖名额
+                    totle += 1
+                buf.append(row['team_id'])
+                totle -= 1
+                pos += 1
+            medal_team_award.append(self.award("silver-medal", "Silver Medalist", buf))
         # award for bronze
         totle = self.config['bronze']
         buf = []
-        while totle > 0:
-            row = self.scoreboard['rows'][pos]
-            if not self.team_award_occupy(row['team_id']): #打星队伍不占用获奖名额
-                totle += 1
-            buf.append(row['team_id'])
-            totle -= 1
-            pos += 1
-        medal_team_award.append(self.award("bronze-medal", "Bronze Medalist", buf))
+        if totle > 0:
+            while totle > 0:
+                row = self.scoreboard['rows'][pos]
+                if not self.team_award_occupy(row['team_id']): #打星队伍不占用获奖名额
+                    totle += 1
+                buf.append(row['team_id'])
+                totle -= 1
+                pos += 1
+            medal_team_award.append(self.award("bronze-medal", "Bronze Medalist", buf))
         self.limited = pos - 1
         return medal_team_award
 
