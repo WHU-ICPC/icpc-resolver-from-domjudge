@@ -21,6 +21,12 @@ A tools to generate xml file of icpc-resolver via domjudge RESTful API.
 
 `resolver`源码阅读记录：[滚榜程序Resolver源码阅读](https://blog.lanly.vip/article/7)
 
+## 更新log
+
+### 2022.10.06
+
+不用再获取`Basic Authorization key`，改为用账号登录的方式
+
 ## Prerequisite
 
 * icpc-resolver >= resolver-2.1
@@ -33,7 +39,8 @@ A tools to generate xml file of icpc-resolver via domjudge RESTful API.
 ```jsonld
 {
   "url": <contest api url>,
-  "key": <Basic Authorization key>,
+  "username": <username whose role is api_reader>,
+  "password": <password of the user>,
   "xml": <output xml file name>,
   "gold": <the number of gold medals>,
   "silver": <the number of silver medals>,
@@ -43,9 +50,7 @@ A tools to generate xml file of icpc-resolver via domjudge RESTful API.
 }
 ```
 
-- `Basic Authorization key`获取方式：访问对应的需要登录的`api`（比如`http://www.example.com/api/v4/contests/1/judgements`）后需要账号密码登录，登录后`F12`刷新查看获取数据的header即可看到`Authorization`
-
-![authorization](img/authorization.png)
+- 登录的`user`需为`api_reader`角色。
 
 - `no_occupy_award_categories`表示给予颁奖，但不占用名额，是想让那些打星选手也亮亮相，而不是没有任何奖项在滚榜时匆匆略过。
 
@@ -56,7 +61,8 @@ A tools to generate xml file of icpc-resolver via domjudge RESTful API.
 #### example
 ```jsonld
   "url": "https://www.example.com/api/v4/contests/{cid},
-  "key": "KEY",
+  "username": "cds",
+  "password": "cds",
   "xml": "events.xml"
   "gold": 4,
   "silver": 4,

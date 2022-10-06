@@ -3,6 +3,8 @@ import requests
 from html import escape
 from functools import reduce
 
+from requests.auth import HTTPBasicAuth
+
 from utils.XML import XML_dump
 from utils.utils import dtime2timestamp, ctime2timestamp, make_ordinal
 
@@ -15,11 +17,9 @@ class DOMjudge:
         self.prep_data()
 
     def API(self, method):
-        key = "Basic %s" % self.config['key']
         req_url = self.config['url'] + method
         print ("[   ] GET %s" % req_url, end='\r')
-        req_hdr = { 'Authorization': key }
-        res = requests.get(req_url, headers=req_hdr,  verify=False)
+        res = requests.get(req_url, auth=HTTPBasicAuth(self.config['username'], self.config['password']), verify=False)
         print ("[%d] GET %s" % (res.status_code, req_url))
         return json.loads(res.text)
 
