@@ -17,11 +17,49 @@ A tools to generate xml file of icpc-resolver via domjudge RESTful API.
 
 其中打星队伍会颁发金银铜，但不会占用总获奖名额。
 
-在生成`xml`的同时还会生成对应名字的`csv`，包含队伍的信息和奖项。
+在生成`xml`的同时还会生成对应名字的`csv`，包含队伍的信息和奖项，方便制作获奖队伍PPT。
 
 `resolver`源码阅读记录：[滚榜程序Resolver源码阅读](https://blog.lanly.vip/article/7)
 
 ## 更新log
+
+### 2023.05.14
+
+新增适用于`PTA`平台的，`CCPC Final`评奖规则的类`PTA_School`。奖项用中文+`Emoji`表情，字体用的是`Noto Sans CJK`.
+评奖规则：
+1. 按学校排名颁奖金银铜
+2. 本科组与专科组分开颁奖
+3. 非校内第一队伍按后续队伍的校排作为排名。
+
+`pta.json`说明：
+```jsonld
+{
+  "url": "https://pintia.cn/api/xcpc/problem-sets/<PID>/",
+  "file":"",
+  "username": <pta email>,
+  "password": <pta password>,
+  "xml": "events",
+  "ben": {
+      "group": [1],
+      "gold": 10,
+      "silver": 20,
+      "bronze": 30,
+      "first": 3,
+      "suffix": ""
+  },
+  "zhuan": {
+      "group": [2],
+      "gold": 1,
+      "silver": 2,
+      "bronze": 3,
+      "first": 3,
+      "suffix": "(专科)"
+  }
+}
+```
+
+- `file`指本地的`eventfeed`，若不为空则从本地文件读取，否则通过`url`获取。
+- `ben`即本科组奖项设置，`zhuan`即专科组奖项设置，`group`表示参与评奖的组别，然后是金银铜，以及冠亚季（前3），`suffix`表示奖项的后缀。（感觉应该放到一个`medal`列表更好）
 
 ### 2022.10.06
 
@@ -101,7 +139,7 @@ Resolver 2.4版的`CDP`目录格式如下：
 │   └── 3               // Categories的id
 │       └── logo.png
 ├── organizations       // Affiliations照片，只要某Affiliations的队伍有logo，其他同Affiliations的队伍就都是该logo
-│   ├── 3000            // 该Affiliations所对应的任一队伍的icpc id
+│   ├── 3000            // 该Affiliations所对应的任一队伍的id
 │   │   └── logo.png
 │   ├── 3001
 │   │   └── logo.png
@@ -113,7 +151,7 @@ Resolver 2.4版的`CDP`目录格式如下：
 │   └── 3187
 │       └── logo.png
 └── teams               // 队伍照片
-    ├── 3000            // 队伍的icpc id
+    ├── 3000            // 队伍的id
     │   └── photo.png   // 照片名字
     ├── 3001
     │   └── photo.png
