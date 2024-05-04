@@ -7,7 +7,10 @@ from utils.argument_parser import argument_parser
 from utils.config_loader import config_loader
 import subprocess
 
+import urllib3
+
 def main():
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     argument = argument_parser()
     config = config_loader(argument['config'])
     # PTA_school(config).export(config['xml'])

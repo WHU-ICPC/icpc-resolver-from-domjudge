@@ -47,9 +47,10 @@ class DOMjudge:
 
     def load_organizations(self):
         organizations = self.API("/organizations")
+        # print(organizations)
         self.organizations = {}
         for organization in organizations:
-            self.organizations[organization['icpc_id']] = organization
+            self.organizations[organization['id']] = organization
 
     def load_teams(self):
         teams = self.API("/teams")
@@ -173,7 +174,7 @@ class DOMjudge:
         return [{
             'id': team['id'],
             'external-id': team['icpc_id'],
-            'name': escape(team['name']),
+            'name': self.organizations[team['organization_id']]['formal_name'] + ' - ' + escape(team['name']),
             'university': self.organizations[team['organization_id']]['formal_name'],
             'university-short-name': self.organizations[team['organization_id']]['shortname'],
             'region': self.groups[team['group_ids'][0]]['name'],
@@ -212,7 +213,7 @@ class DOMjudge:
             team = self.team_dict[team_id]
             category = team["affiliation"]
             group = self.get_team_group_name(team_id)
-            members = team["members"]
+            members = team["public_description"]
             self.award_list.append(f'"{team_id}","{team["name"]}","{group}","{category}","{citation}","{members}"')
         return {
             'id': id,
@@ -283,6 +284,7 @@ class DOMjudge:
             cnt += 1
             buf[cnt].append(row['team_id'])
         winner_award = []
+
         for _, team_ids in enumerate(buf):
             winner_award.append(self.award(f'winner', 'World Champion', team_ids))
         return winner_award

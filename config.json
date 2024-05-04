@@ -1,0 +1,11 @@
+{
+  "url": "https://oj.juny.wang/api/v4/contests/4",
+  "username": "jury",
+  "password": "qXWqF!WV23CGdQS",
+  "xml": "events",
+  "gold": 22,
+  "silver": 44,
+  "bronze": 66,
+  "no_occupy_award_categories": [4,5],
+  "award_best_girl": []
+}
